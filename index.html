@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="GPU Memory Calculator for LLMs" />
+    <meta
+      name="description"
+      content="Calculate the GPU memory required to serve a Large Language Model (LLM) based on the number of parameters and quantization bits."
+    />
+    <meta
+      name="keywords"
+      content="GPU memory calculator, LLM GPU requirement, AI model memory, large language model, LLM, GPU memory, AI tools"
+    />
+    <meta name="author" content="alexdotleo" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="en" />
+    <meta name="distribution" content="global" />
+
+    <title>⚡️ GPU Memory Calculator for LLMs ⚡️</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        font-weight: bold;
+      }
+      input {
+        padding: 8px;
+        margin-top: 5px;
+        display: block;
+        width: 20%;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        border-radius: 10px;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>⚡️ GPU Memory Calculator for LLMs ⚡️</h1>
+    <form id="memoryForm">
+      <div class="form-group">
+        <label for="parameters">Number of Parameters (in billions):</label>
+        <input
+          type="number"
+          id="parameters"
+          name="parameters"
+          step="0.1"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="bits">Quantization (bits):</label>
+        <select id="bits" name="bits" required>
+          <option value="2">2-bit</option>
+          <option value="3">3-bit</option>
+          <option value="4">4-bit</option>
+          <option value="5">5-bit</option>
+          <option value="6">6-bit</option>
+          <option value="8">8-bit</option>
+          <option value="16">16-bit (FP16)</option>
+          <option value="32">32-bit (FP32)</option>
+        </select>
+      </div>
+      <button type="button" onclick="calculateMemory()">Calculate</button>
+    </form>
+    <div id="result"></div>
+
+    <hr />
+    <div id="disclaimer" style="margin-top: 20px; font-size: 14px; color: #555">
+      <p>
+        <strong>Disclaimer:</strong> I built this tool because I couldn't find
+        an easy way to calculate GPU memory requirements for large language
+        models. Every time I wanted to run a model locally, I had to manually
+        look up the specifications for each model or get lost into endless
+        Reddit threads. This tool provides an approximate calculation of memory
+        requirements, but keep in mind that actual requirements may vary
+        depending on additional factors such as the model architecture, GPU
+        teraflops, memory bandwidth, and other implementation details.
+      </p>
+      <p>
+        If you found this tool helpful, tips are appreciated! Here are my crypto
+        wallets for donations:
+      </p>
+      <ul style="list-style: none; padding: 0; margin: 0">
+        <li>
+          <strong>SOL:</strong>
+          <span style="font-family: monospace"
+            >G2XEByVSfa7qjY9kiD1717Js1fXjM144oh6ngsv912R5</span
+          >
+        </li>
+        <li>
+          <strong>BTC:</strong>
+          <span style="font-family: monospace"
+            >bc1qp9wgx86fn4zu2rp6u09rkw22dlyrxpf5ewsngu</span
+          >
+        </li>
+        <li>
+          <strong>ETH:</strong>
+          <span style="font-family: monospace"
+            >0x0eB9792F58e3eCbf280C213911022f6860D7bcD8</span
+          >
+        </li>
+      </ul>
+      <p style="margin-top: 10px">Thank you for your support!</p>
+    </div>
+
+    <script>
+      function calculateMemory() {
+        const parameters = parseFloat(
+          document.getElementById("parameters").value
+        );
+        const bits = parseInt(document.getElementById("bits").value);
+
+        if (isNaN(parameters) || isNaN(bits) || bits <= 0 || parameters <= 0) {
+          document.getElementById("result").innerText =
+            "Please enter valid inputs.";
+          return;
+        }
+
+        const bitsPerByte = 8;
+        const overhead = 1.2;
+
+        const P_actual = parameters * 1e9;
+
+        const memoryInBytes = (P_actual * bits) / bitsPerByte;
+
+        const memoryInGB = (memoryInBytes / 1024 ** 3) * overhead;
+
+        document.getElementById(
+          "result"
+        ).innerText = `Required GPU memory: ${memoryInGB.toFixed(2)} GB`;
+      }
+    </script>
+  </body>
+</html>
